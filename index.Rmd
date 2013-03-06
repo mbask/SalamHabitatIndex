@@ -1,0 +1,168 @@
+---
+title       : SalamHabIndex
+subtitle    : Un framework per testare più indici di habitat di salamandre
+author      : Marco Bascietto
+job         : MANFOR
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
+mode        : selfcontained # {standalone, draft}
+github:
+  user: mbask
+  repo: SalamHabIndex
+---
+
+
+```{r "initialize", echo=FALSE, result=FALSE, warning=FALSE, cache=FALSE, include=FALSE}
+
+
+# Pacchetti e pulizia workspace -------------------------------------------
+
+library(ggplot2)
+library(data.table)
+
+
+setwd("~/Documents/Academy/IBAF/MANFOR/SalamHabIndex")
+rm(list = ls())
+# slidify is not data.table-aware yet:
+assignInNamespace("cedta.override", c("slidify"), "data.table")
+
+
+sCountSimulation <- function(n, mu, sigma) {
+  tmpSCount <- round(rnorm(n = n, mean = mu, sd = sigma), 0)
+  # I valori negativi di numero di salamandre vengono posti a 0
+  tmpSCount[tmpSCount < 0] <- 0
+  tmpSCount
+
+}
+
+resamplingCount <- 10000
+
+sIndexRaw <- read.csv("data/StimeFrac.csv")
+```
+
+# Introduzione
+
+Per dare un senso a quello che dicevo in email, ho creato un *framework* per testare la bontà dei diversi indici di presenza di habitat di salamandre che si possono calcolare rimescolando le variae misure da prendere in campo (perimetro, diametro, numero delle concavità ecc.). Il *framework* è un semplice *script* R, lo stesso che ha prodotto questo breve *report*.
+
+Per testare lo script ho disegnato il profilo di tre ceppaie afferenti a tre tipologie diverse per potenziale presenza di habitat (nessuno [`Cerchio`], qualche [`Carpino`], molti [`Carpinoso`] habitat):
+
+![Ipotetica ceppaia senza habitat](data/Cerchio.jpg)
+![Ipotetica ceppaia con habitat](data/Carpino.jpg)
+![Ipotetica ceppaia con molti habitat](data/Carpinoso.jpg)
+
+Il framework calcola tutti i potenziali indici per ciascuna tipologia, simula il conteggio delle salamandre trovate nelle 3 ceppaie e calcola la correlazione tra ciascuno degli indici e il conteggio di salamandre per ogni tipologia di ceppaia. Una migliore correlazione indica un indice più performante.
+Per ora, gli indici considerati in questo test sono solo la dimensione frattale e l'indice proposto da Romano.
+
+
+---
+
+## Misure
+
+Su ciascuno, con `ImageJ`, ho misurato la dimensione frattale (`Df`), perimetro (`B`), diametro massimo (`maxD`) ed ho imnposto che il diametro a 1.30m sia 100 (`dbh`), ossia il diametro della ceppaia a cerchio:
+
+```{r "Misure", echo=FALSE}
+print(sIndexRaw[, !colnames(sIndexRaw) %in% c("sAvg", "sStd")])
+```
+
+---
+
+## Simulazione
+La simulazione siumula di trovare le salamandre in ciascuna tipologia di ceppaia. La simulazione del conteggio di salamandre avviene estraendo numeri da una distribuzione normale di media e deviazione standard prefissati, per ogni tipologia di ceppaia:
+
+```{r "Distribuzione", echo=FALSE}
+print(sIndexRaw[, c("Forma", "sAvg", "sStd")])
+```
+
+Per esempio, il numero di salamandre trovate nella simulazione della ceppaia `Carpinoso` viene estratta da una $\mathcal{N}($`r sIndexRaw$sAvg[sIndexRaw$Forma == "Carpinoso"]`$,$`r sIndexRaw$sStd[sIndexRaw$Forma == "Carpinoso"]`$)$ troncata a 0. Per 10 simulazioni di conteggio, potremmo avere i seguenti numeri per: `r sCountSimulation(n = 10, mu = sIndexRaw$sAvg[sIndexRaw$Forma == "Carpinoso"], sigma = sIndexRaw$sStd[sIndexRaw$Forma == "Carpinoso"])`.
+
+Per la ceppaia `Carpino`, invece, potremmo avere i seguenti conteggi: `r sCountSimulation(n = 10, mu = sIndexRaw$sAvg[sIndexRaw$Forma == "Carpino"], sigma = sIndexRaw$sStd[sIndexRaw$Forma == "Carpino"])`
+
+I parametri delle distribuzioni sono da definire secondo l'esperienza di Antonio.
+
+---
+
+# Valori degli indici
+
+I valori dell'indice di A. Romano per le tre ceppaie, secondo l'equazione $\left(\frac{B}{C}/\frac{C}{T}\right)-1$ e la dimensione frattale sono:
+
+```{r "calcoloIndiceRomano", echo=TRUE}
+sIndexRaw <- within(sIndexRaw, {
+  C <- maxD * pi
+  T <- dbh * pi
+  RIndex <- ((B/C)/(C/T))-1
+})
+print(sIndexRaw[, c("Forma", "RIndex", "Df")])
+```
+
+Sembra strano il valore negativo per l'indice di Romano per il `Carpino`, se c'è un errore nel calcolo non riesco a trovarlo.
+
+---
+
+# Simulazione
+
+```{r "Resampling", echo = FALSE}
+
+# Eseguo `resamplingCount` volte il ricampionamento dalla distribuzione N(sAvg, sStd) per ciascuna forma, del numero di salamandre
+tmpSCount <- sCountSimulation(
+  n = nrow(sIndexRaw) * resamplingCount
+  , mu = sIndexRaw$sAvg
+  , sigma = sIndexRaw$sStd
+  )
+
+# Metto insieme i dati
+sIndex_wdf <- data.frame(
+  shape = sIndexRaw$Forma
+  , sCount = tmpSCount
+  , resamplingStep = rep(1:resamplingCount, each = 3)
+  , Df = sIndexRaw$Df
+  , RIndex = sIndexRaw$RIndex
+)
+# Li dispongo in forma `long`
+sIndex_ldf <- data.frame(
+  sIndex_wdf[1:3]
+  , stack(sIndex_wdf[-c(1, 2, 3)])
+  )
+```
+
+Eseguo `r sprintf("%d", resamplingCount)` simulazioni, su `r nrow(sIndexRaw)` tipologie di ceppaie, ottengo `r nrow(sIndex_wdf)` dati di conteggi di salamandre (come se avessi campionato `r sprintf("%d", resamplingCount)` boschi di `r nrow(sIndexRaw)` alberi ciascuno). 
+
+Per ogni simulazione (o bosco) ho a disposizione i 2 indici, per ciascuno dei quali calcolo la correlazione lineare (pearson) con il numero di salamandre.
+
+```{r "Correlation", echo = FALSE, error=TRUE, warning=FALSE}
+# Calcolo la correlazione, all'interno di ciascun set di forme, tra il numero di salamandre e ciascuno degli indici calcolati
+tmpSIndex_dt <- data.table(sIndex_ldf, key = c("resamplingStep", "ind"))
+#print(cor(tmpSIndex_dt$sCount, tmpSIndex_dt$values))
+sIndexSummary_dt <- tmpSIndex_dt[
+  , list(correlation = cor(sCount, values))
+  , by = list (resamplingStep, ind)
+  ]
+#print(head(sIndexSummary_dt))
+```
+
+La media e la deviazione standard sulle `r sprintf("%d", resamplingCount)` simulazioni della correlazione tra indice e numero salamandre, per ciascun indice sono le seguenti:
+```{r "CorrelationResults", echo = FALSE}
+sIndexSummary_dt[
+  , list(correlationAvg = mean(correlation, na.rm = TRUE), correlationStd = sd(correlation, na.rm = TRUE))
+  , by = list (ind)
+  ]
+```
+
+L'indice con `correlationAvg` maggiore è il migliore.
+
+---
+# Risultati
+
+```{r "Plot", echo = FALSE, warning=FALSE, fig.width = 13, fig.height=5}
+print(
+  ggplot(sIndexSummary_dt, aes(x = ind, y = correlation, fill = ind)) +
+  geom_violin()
+  )
+```
+
+Grafico a violino della distribuzione delle `r sprintf("%d", resamplingCount)` correlazioni tra ciascun indice ed il numero di salamandre simulato. L'ampiezza del "violino" è proporzionale al numero di punti corrispondenti alla correlazione (sulle ordinate). Tanto più ampio è il violino verso valori di correlazione pari ad 1, tanto migliore è l'indice per descrivere il numero di salamandre nella ceppaia.
+
+```{r "SpringCleaning", echo = FALSE}
+rm(list = ls(pattern = "^tmp"))
+```

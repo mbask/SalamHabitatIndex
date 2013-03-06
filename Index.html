@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SalamHabIndex</title>
+  <meta charset="utf-8">
+  <meta name="description" content="SalamHabIndex">
+  <meta name="author" content="Marco Bascietto">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+    <link rel="stylesheet" href = "assets/css/ribbons.css">
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+    <!-- END LOGO SLIDE -->
+    
+
+    <!-- TITLE SLIDE -->
+    <!-- Should I move this to a Local Layout File? -->
+    <slide class="title-slide segue nobackground">
+      <hgroup class="auto-fadein">
+        <h1>SalamHabIndex</h1>
+        <h2>Un framework per testare più indici di habitat di salamandre</h2>
+        <p>Marco Bascietto<br/>MANFOR</p>
+      </hgroup>
+      <a href="https://github.com/mbask/SalamHabIndex/zipball/gh-pages" class="example">
+        Download
+      </a>
+          </slide>
+
+    <!-- SLIDES -->
+      <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h1>Introduzione</h1>
+  </hgroup>
+  <article>
+    <p>Per dare un senso a quello che dicevo in email, ho creato un <em>framework</em> per testare la bontà dei diversi indici di presenza di habitat di salamandre che si possono calcolare rimescolando le variae misure da prendere in campo (perimetro, diametro, numero delle concavità ecc.). Il <em>framework</em> è un semplice <em>script</em> R, lo stesso che ha prodotto questo breve <em>report</em>.</p>
+
+<p>Per testare lo script ho disegnato il profilo di tre ceppaie afferenti a tre tipologie diverse per potenziale presenza di habitat (nessuno [<code>Cerchio</code>], qualche [<code>Carpino</code>], molti [<code>Carpinoso</code>] habitat):</p>
+
+<p><img src="data/Cerchio.jpg" alt="Ipotetica ceppaia senza habitat">
+<img src="data/Carpino.jpg" alt="Ipotetica ceppaia con habitat">
+<img src="data/Carpinoso.jpg" alt="Ipotetica ceppaia con molti habitat"></p>
+
+<p>Il framework calcola tutti i potenziali indici per ciascuna tipologia, simula il conteggio delle salamandre trovate nelle 3 ceppaie e calcola la correlazione tra ciascuno degli indici e il conteggio di salamandre per ogni tipologia di ceppaia. Una migliore correlazione indica un indice più performante.
+Per ora, gli indici considerati in questo test sono solo la dimensione frattale e l&#39;indice proposto da Romano.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Misure</h2>
+  </hgroup>
+  <article>
+    <p>Su ciascuno, con <code>ImageJ</code>, ho misurato la dimensione frattale (<code>Df</code>), perimetro (<code>B</code>), diametro massimo (<code>maxD</code>) ed ho imnposto che il diametro a 1.30m sia 100 (<code>dbh</code>), ossia il diametro della ceppaia a cerchio:</p>
+
+<pre><code>##       Forma    Df      B  maxD dbh
+## 1 Carpinoso 1.279 2059.0 228.8 100
+## 2   Carpino 1.185  761.8 206.8 100
+## 3   Cerchio 1.111  330.7 100.0 100
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Simulazione</h2>
+  </hgroup>
+  <article>
+    <p>La simulazione siumula di trovare le salamandre in ciascuna tipologia di ceppaia. La simulazione del conteggio di salamandre avviene estraendo numeri da una distribuzione normale di media e deviazione standard prefissati, per ogni tipologia di ceppaia:</p>
+
+<pre><code>##       Forma sAvg sStd
+## 1 Carpinoso    3  2.0
+## 2   Carpino    2  1.0
+## 3   Cerchio    0  0.5
+</code></pre>
+
+<p>Per esempio, il numero di salamandre trovate nella simulazione della ceppaia <code>Carpinoso</code> viene estratta da una $\mathcal{N}(\(3\),\(2\))$ troncata a 0. Per 10 simulazioni di conteggio, potremmo avere i seguenti numeri per: 0, 4, 0, 3, 6, 4, 3, 2, 2, 5.</p>
+
+<p>Per la ceppaia <code>Carpino</code>, invece, potremmo avere i seguenti conteggi: 0, 2, 3, 2, 2, 1, 1, 1, 2, 3</p>
+
+<p>I parametri delle distribuzioni sono da definire secondo l&#39;esperienza di Antonio.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h1>Valori degli indici</h1>
+  </hgroup>
+  <article>
+    <p>I valori dell&#39;indice di A. Romano per le tre ceppaie, secondo l&#39;equazione \(\left(\frac{B}{C}/\frac{C}{T}\right)-1\) e la dimensione frattale sono:</p>
+
+<pre><code class="r">sIndexRaw &lt;- within(sIndexRaw, {
+    C &lt;- maxD * pi
+    T &lt;- dbh * pi
+    RIndex &lt;- ((B/C)/(C/T)) - 1
+})
+print(sIndexRaw[, c(&quot;Forma&quot;, &quot;RIndex&quot;, &quot;Df&quot;)])
+</code></pre>
+
+<pre><code>##       Forma   RIndex    Df
+## 1 Carpinoso  0.25197 1.279
+## 2   Carpino -0.43299 1.185
+## 3   Cerchio  0.05265 1.111
+</code></pre>
+
+<p>Sembra strano il valore negativo per l&#39;indice di Romano per il <code>Carpino</code>, se c&#39;è un errore nel calcolo non riesco a trovarlo.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h1>Simulazione</h1>
+  </hgroup>
+  <article>
+    <p>Eseguo 10000 simulazioni, su 3 tipologie di ceppaie, ottengo 30000 dati di conteggi di salamandre (come se avessi campionato 10000 boschi di 3 alberi ciascuno). </p>
+
+<p>Per ogni simulazione (o bosco) ho a disposizione i 2 indici, per ciascuno dei quali calcolo la correlazione lineare (pearson) con il numero di salamandre.</p>
+
+<p>La media e la deviazione standard sulle 10000 simulazioni della correlazione tra indice e numero salamandre, per ciascun indice sono le seguenti:</p>
+
+<pre><code>##       ind correlationAvg correlationStd
+## 1:     Df       0.742965         0.3785
+## 2: RIndex      -0.003177         0.5459
+</code></pre>
+
+<p>L&#39;indice con <code>correlationAvg</code> maggiore è il migliore.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+      <slide class="" id="slide-6" style="background:;">
+  <hgroup>
+    <h1>Risultati</h1>
+  </hgroup>
+  <article>
+    <p><img src="figure/Plot.png" alt="plot of chunk Plot"> </p>
+
+<p>Grafico a violino della distribuzione delle 10000 correlazioni tra ciascun indice ed il numero di salamandre simulato. L&#39;ampiezza del &quot;violino&quot; è proporzionale al numero di punti corrispondenti alla correlazione (sulle ordinate). Tanto più ampio è il violino verso valori di correlazione pari ad 1, tanto migliore è l&#39;indice per descrivere il numero di salamandre nella ceppaia.</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+
+  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+<!-- Grab CDN jQuery, fall back to local if offline -->
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+<script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery-1.7.min.js"><\/script>')</script>
+<!-- Load Javascripts for Widgets -->
+<!-- MathJax: Fall back to local if CDN offline but local image fonts are not supported (saves >100MB) -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [['$','$'], ['\\(','\\)']],
+      processEscapes: true
+    }
+  });
+</script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!-- <script src="https://c328740.ssl.cf1.rackcdn.com/mathjax/2.0-latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script> -->
+<script>window.MathJax || document.write('<script type="text/x-mathjax-config">MathJax.Hub.Config({"HTML-CSS":{imageFont:null}});<\/script><script src="libraries/widgets/mathjax/MathJax.js?config=TeX-AMS-MML_HTMLorMML"><\/script>')
+</script>
+<!-- LOAD HIGHLIGHTER JS FILES -->
+<script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- DONE LOADING HIGHLIGHTER JS FILES -->
+</html>
