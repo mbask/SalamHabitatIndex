@@ -1,5 +1,5 @@
 ---
-title       : SalamHabIndex
+title       : SalamHabitatIndex
 subtitle    : Un framework per testare più indici di habitat di salamandre
 author      : Marco Bascietto
 job         : MANFOR
@@ -10,7 +10,7 @@ widgets     : [mathjax]            # {mathjax, quiz, bootstrap}
 mode        : selfcontained # {standalone, draft}
 github:
   user: mbask
-  repo: SalamHabIndex
+  repo: SalamHabitatIndex
 ---
 
 
@@ -23,9 +23,9 @@ Per dare un senso a quello che dicevo in email, ho creato un *framework* per tes
 
 Per testare lo script ho disegnato il profilo di tre ceppaie afferenti a tre tipologie diverse per potenziale presenza di habitat (nessuno [`Cerchio`], qualche [`Carpino`], molti [`Carpinoso`] habitat):
 
-![Ipotetica ceppaia senza habitat](data/Cerchio.jpg)
-![Ipotetica ceppaia con habitat](data/Carpino.jpg)
-![Ipotetica ceppaia con molti habitat](data/Carpinoso.jpg)
+![Ipotetica ceppaia senza habitat](images/Cerchio.jpg)
+![Ipotetica ceppaia con habitat](images/Carpino.jpg)
+![Ipotetica ceppaia con molti habitat](images/Carpinoso.jpg)
 
 Il framework calcola tutti i potenziali indici per ciascuna tipologia, simula il conteggio delle salamandre trovate nelle 3 ceppaie e calcola la correlazione tra ciascuno degli indici e il conteggio di salamandre per ogni tipologia di ceppaia. Una migliore correlazione indica un indice più performante.
 Per ora, gli indici considerati in questo test sono solo la dimensione frattale e l'indice proposto da Romano.
@@ -54,17 +54,17 @@ La simulazione siumula di trovare le salamandre in ciascuna tipologia di ceppaia
 
 ```
 ##       Forma sAvg sStd
-## 1 Carpinoso    3  2.0
+## 1 Carpinoso    3  1.0
 ## 2   Carpino    2  1.0
 ## 3   Cerchio    0  0.5
 ```
 
 
-Per esempio, il numero di salamandre trovate nella simulazione della ceppaia `Carpinoso` viene estratta da una $\mathcal{N}($3$,$2$)$ troncata a 0. Per 10 simulazioni di conteggio, potremmo avere i seguenti numeri per: 0, 4, 0, 3, 6, 4, 3, 2, 2, 5.
+Per esempio, il numero di salamandre trovate nella simulazione della ceppaia `Carpinoso` viene estratta da una $\mathcal{N}($ 3 $,$ 1 $)$ troncata a 0. Su 10 alberi carpinosi, potremmo trovare: 2, 2, 3, 2, 3, 4, 1, 2, 3, 3 salamandre.
 
-Per la ceppaia `Carpino`, invece, potremmo avere i seguenti conteggi: 0, 2, 3, 2, 2, 1, 1, 1, 2, 3
+Per la ceppaia `Carpino`, invece, potremmo avere un numero di salamandre da una $\mathcal{N}($ 2 $,$ 1 $)$, per esempio: 3, 3, 2, 2, 2, 1, 2, 2, 3, 3
 
-I parametri delle distribuzioni sono da definire secondo l'esperienza di Antonio.
+**I parametri delle distribuzioni sono da definire secondo l'esperienza di Antonio.**
 
 ---
 
@@ -110,8 +110,8 @@ La media e la deviazione standard sulle 10000 simulazioni della correlazione tra
 
 ```
 ##       ind correlationAvg correlationStd
-## 1:     Df       0.742965         0.3785
-## 2: RIndex      -0.003177         0.5459
+## 1:     Df        0.85769         0.2018
+## 2: RIndex        0.07805         0.4316
 ```
 
 
@@ -123,7 +123,7 @@ L'indice con `correlationAvg` maggiore è il migliore.
 ![plot of chunk Plot](figure/Plot.png) 
 
 
-Grafico a violino della distribuzione delle 10000 correlazioni tra ciascun indice ed il numero di salamandre simulato. L'ampiezza del "violino" è proporzionale al numero di punti corrispondenti alla correlazione (sulle ordinate). Tanto più ampio è il violino verso valori di correlazione pari ad 1, tanto migliore è l'indice per descrivere il numero di salamandre nella ceppaia.
+Grafico a violino della distribuzione delle 10000 correlazioni tra ciascun indice di presenza di habitat ed il numero simulato di salamandre nelle varie tipologie di ceppaie. L'ampiezza del "violino" è proporzionale al numero di punti corrispondenti alla correlazione (sulle ordinate). Tanto più ampio è il violino verso valori di correlazione pari ad 1, tanto migliore è l'indice per descrivere il numero di salamandre nella ceppaia.
 
 
 

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>SalamHabIndex</title>
+  <title>SalamHabitatIndex</title>
   <meta charset="utf-8">
-  <meta name="description" content="SalamHabIndex">
+  <meta name="description" content="SalamHabitatIndex">
   <meta name="author" content="Marco Bascietto">
   <meta name="generator" content="slidify" />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,11 +32,11 @@
     <!-- Should I move this to a Local Layout File? -->
     <slide class="title-slide segue nobackground">
       <hgroup class="auto-fadein">
-        <h1>SalamHabIndex</h1>
+        <h1>SalamHabitatIndex</h1>
         <h2>Un framework per testare più indici di habitat di salamandre</h2>
         <p>Marco Bascietto<br/>MANFOR</p>
       </hgroup>
-      <a href="https://github.com/mbask/SalamHabIndex/zipball/gh-pages" class="example">
+      <a href="https://github.com/mbask/SalamHabitatIndex/zipball/gh-pages" class="example">
         Download
       </a>
           </slide>
@@ -51,9 +51,9 @@
 
 <p>Per testare lo script ho disegnato il profilo di tre ceppaie afferenti a tre tipologie diverse per potenziale presenza di habitat (nessuno [<code>Cerchio</code>], qualche [<code>Carpino</code>], molti [<code>Carpinoso</code>] habitat):</p>
 
-<p><img src="data/Cerchio.jpg" alt="Ipotetica ceppaia senza habitat">
-<img src="data/Carpino.jpg" alt="Ipotetica ceppaia con habitat">
-<img src="data/Carpinoso.jpg" alt="Ipotetica ceppaia con molti habitat"></p>
+<p><img src="images/Cerchio.jpg" alt="Ipotetica ceppaia senza habitat">
+<img src="images/Carpino.jpg" alt="Ipotetica ceppaia con habitat">
+<img src="images/Carpinoso.jpg" alt="Ipotetica ceppaia con molti habitat"></p>
 
 <p>Il framework calcola tutti i potenziali indici per ciascuna tipologia, simula il conteggio delle salamandre trovate nelle 3 ceppaie e calcola la correlazione tra ciascuno degli indici e il conteggio di salamandre per ogni tipologia di ceppaia. Una migliore correlazione indica un indice più performante.
 Per ora, gli indici considerati in questo test sono solo la dimensione frattale e l&#39;indice proposto da Romano.</p>
@@ -87,16 +87,16 @@ Per ora, gli indici considerati in questo test sono solo la dimensione frattale 
     <p>La simulazione siumula di trovare le salamandre in ciascuna tipologia di ceppaia. La simulazione del conteggio di salamandre avviene estraendo numeri da una distribuzione normale di media e deviazione standard prefissati, per ogni tipologia di ceppaia:</p>
 
 <pre><code>##       Forma sAvg sStd
-## 1 Carpinoso    3  2.0
+## 1 Carpinoso    3  1.0
 ## 2   Carpino    2  1.0
 ## 3   Cerchio    0  0.5
 </code></pre>
 
-<p>Per esempio, il numero di salamandre trovate nella simulazione della ceppaia <code>Carpinoso</code> viene estratta da una $\mathcal{N}(\(3\),\(2\))$ troncata a 0. Per 10 simulazioni di conteggio, potremmo avere i seguenti numeri per: 0, 4, 0, 3, 6, 4, 3, 2, 2, 5.</p>
+<p>Per esempio, il numero di salamandre trovate nella simulazione della ceppaia <code>Carpinoso</code> viene estratta da una \(\mathcal{N}(\) 3 \(,\) 1 \()\) troncata a 0. Su 10 alberi carpinosi, potremmo trovare: 2, 2, 3, 2, 3, 4, 1, 2, 3, 3 salamandre.</p>
 
-<p>Per la ceppaia <code>Carpino</code>, invece, potremmo avere i seguenti conteggi: 0, 2, 3, 2, 2, 1, 1, 1, 2, 3</p>
+<p>Per la ceppaia <code>Carpino</code>, invece, potremmo avere un numero di salamandre da una \(\mathcal{N}(\) 2 \(,\) 1 \()\), per esempio: 3, 3, 2, 2, 2, 1, 2, 2, 3, 3</p>
 
-<p>I parametri delle distribuzioni sono da definire secondo l&#39;esperienza di Antonio.</p>
+<p><strong>I parametri delle distribuzioni sono da definire secondo l&#39;esperienza di Antonio.</strong></p>
 
   </article>
   <!-- Presenter Notes -->
@@ -141,8 +141,8 @@ print(sIndexRaw[, c(&quot;Forma&quot;, &quot;RIndex&quot;, &quot;Df&quot;)])
 <p>La media e la deviazione standard sulle 10000 simulazioni della correlazione tra indice e numero salamandre, per ciascun indice sono le seguenti:</p>
 
 <pre><code>##       ind correlationAvg correlationStd
-## 1:     Df       0.742965         0.3785
-## 2: RIndex      -0.003177         0.5459
+## 1:     Df        0.85769         0.2018
+## 2: RIndex        0.07805         0.4316
 </code></pre>
 
 <p>L&#39;indice con <code>correlationAvg</code> maggiore è il migliore.</p>
@@ -158,7 +158,7 @@ print(sIndexRaw[, c(&quot;Forma&quot;, &quot;RIndex&quot;, &quot;Df&quot;)])
   <article>
     <p><img src="figure/Plot.png" alt="plot of chunk Plot"> </p>
 
-<p>Grafico a violino della distribuzione delle 10000 correlazioni tra ciascun indice ed il numero di salamandre simulato. L&#39;ampiezza del &quot;violino&quot; è proporzionale al numero di punti corrispondenti alla correlazione (sulle ordinate). Tanto più ampio è il violino verso valori di correlazione pari ad 1, tanto migliore è l&#39;indice per descrivere il numero di salamandre nella ceppaia.</p>
+<p>Grafico a violino della distribuzione delle 10000 correlazioni tra ciascun indice di presenza di habitat ed il numero simulato di salamandre nelle varie tipologie di ceppaie. L&#39;ampiezza del &quot;violino&quot; è proporzionale al numero di punti corrispondenti alla correlazione (sulle ordinate). Tanto più ampio è il violino verso valori di correlazione pari ad 1, tanto migliore è l&#39;indice per descrivere il numero di salamandre nella ceppaia.</p>
 
   </article>
   <!-- Presenter Notes -->
