@@ -41,7 +41,7 @@ Per ora, gli indici considerati in questo test sono solo la dimensione frattale 
 
 ### Misure
 
-Su ciascuno, con `ImageJ`, ho misurato la dimensione frattale (`Df`), perimetro (`B`), diametro massimo (`maxD`) ed ho imnposto che il diametro a 1.30m sia 100 (`dbh`), ossia il diametro della ceppaia a cerchio:
+Su ciascuno, con `ImageJ`, ho misurato la dimensione frattale (`Df`), perimetro (`B`), diametro massimo (`maxD`) ed ho imposto che il diametro a 1.30m sia 100 (`dbh`), ossia il diametro della ceppaia a cerchio:
 
 
 ```
@@ -56,7 +56,7 @@ Su ciascuno, con `ImageJ`, ho misurato la dimensione frattale (`Df`), perimetro 
 
 ### Simulazione
 
-La simulazione siumula di trovare le salamandre in ciascuna tipologia di ceppaia. La simulazione del conteggio di salamandre avviene estraendo numeri da una distribuzione normale di media e deviazione standard prefissati, per ogni tipologia di ceppaia:
+La simulazione simula di trovare le salamandre in ciascuna tipologia di ceppaia. Il numero di salamandre viene estratto da una distribuzione normale di media e deviazione standard prefissati, per ogni tipologia di ceppaia:
 
 
 ```
@@ -67,9 +67,9 @@ La simulazione siumula di trovare le salamandre in ciascuna tipologia di ceppaia
 ```
 
 
-Per esempio, il numero di salamandre trovate nella simulazione della ceppaia `Carpinoso` viene estratta da una $\mathcal{N}($ 3 $,$ 1 $)$ troncata a 0. Su 10 alberi carpinosi, potremmo trovare: 2, 3, 3, 2, 1, 4, 4, 3, 2, 1 salamandre.
+Per esempio, il numero di salamandre trovate nella simulazione della ceppaia `Carpinoso` viene estratta da una $\mathcal{N}($ 3 $,$ 1 $)$ troncata a 0. Su 10 alberi carpinosi, potremmo trovare: 2, 2, 3, 4, 4, 4, 3, 4, 3, 4 salamandre.
 
-Per la ceppaia `Carpino`, invece, potremmo avere un numero di salamandre da una $\mathcal{N}($ 2 $,$ 1 $)$, per esempio: 1, 2, 1, 0, 2, 2, 3, 4, 1, 2
+Per la ceppaia `Carpino`, invece, potremmo avere un numero di salamandre da una $\mathcal{N}($ 2 $,$ 1 $)$, per esempio: 2, 3, 1, 2, 2, 2, 3, 1, 1, 2
 
 **I parametri delle distribuzioni sono da definire secondo l'esperienza di Antonio.**
 
@@ -86,18 +86,18 @@ sIndexRaw <- within(sIndexRaw, {
     T <- dbh * pi
     RIndex <- ((B/C)/(C/T)) - 1
 })
-print(sIndexRaw[, c("Forma", "RIndex", "Df")])
+print(sIndexRaw[, c("Forma", "B", "C", "T", "RIndex", "Df")])
 ```
 
 ```
-##       Forma   RIndex    Df
-## 1 Carpinoso  0.25197 1.279
-## 2   Carpino -0.43299 1.185
-## 3   Cerchio  0.05265 1.111
+##       Forma      B     C     T   RIndex    Df
+## 1 Carpinoso 2059.0 718.8 314.2  0.25197 1.279
+## 2   Carpino  761.8 649.7 314.2 -0.43299 1.185
+## 3   Cerchio  330.7 314.2 314.2  0.05265 1.111
 ```
 
 
-Sembra strano il valore negativo per l'indice di Romano per il `Carpino`, se c'è un errore nel calcolo non riesco a trovarlo.
+Sembra strano il valore negativo per l'indice di Romano per il `Carpino`, se c'è un errore nel calcolo non riesco a trovarlo  (`Df` è la dimensione frattale, `RIndex` è l'indice di A.Romano).
 
 ---
 
@@ -113,12 +113,12 @@ Per ogni simulazione (o bosco) ho a disposizione i 2 indici, per ciascuno dei qu
 
 
 
-La media e la deviazione standard sulle 10000 simulazioni della correlazione tra indice e numero salamandre, per ciascun indice (`Df` è la dimensione frattale, `RIndex` è l'indice di A.Romano) sono le seguenti:
+La media e la deviazione standard sulle 10000 simulazioni della correlazione tra indice e numero salamandre, per ciascun indice sono le seguenti:
 
 ```
 ##       ind correlationAvg correlationStd
-## 1:     Df        0.85676         0.2044
-## 2: RIndex        0.07309         0.4307
+## 1:     Df        0.85484         0.2053
+## 2: RIndex        0.07014         0.4331
 ```
 
 

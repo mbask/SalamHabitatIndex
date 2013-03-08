@@ -77,7 +77,7 @@
     <h3>Misure</h3>
   </hgroup>
   <article>
-    <p>Su ciascuno, con <code>ImageJ</code>, ho misurato la dimensione frattale (<code>Df</code>), perimetro (<code>B</code>), diametro massimo (<code>maxD</code>) ed ho imnposto che il diametro a 1.30m sia 100 (<code>dbh</code>), ossia il diametro della ceppaia a cerchio:</p>
+    <p>Su ciascuno, con <code>ImageJ</code>, ho misurato la dimensione frattale (<code>Df</code>), perimetro (<code>B</code>), diametro massimo (<code>maxD</code>) ed ho imposto che il diametro a 1.30m sia 100 (<code>dbh</code>), ossia il diametro della ceppaia a cerchio:</p>
 
 <pre><code>##       Forma    Df      B  maxD dbh
 ## 1 Carpinoso 1.279 2059.0 228.8 100
@@ -94,7 +94,7 @@
     <h3>Simulazione</h3>
   </hgroup>
   <article>
-    <p>La simulazione siumula di trovare le salamandre in ciascuna tipologia di ceppaia. La simulazione del conteggio di salamandre avviene estraendo numeri da una distribuzione normale di media e deviazione standard prefissati, per ogni tipologia di ceppaia:</p>
+    <p>La simulazione simula di trovare le salamandre in ciascuna tipologia di ceppaia. Il numero di salamandre viene estratto da una distribuzione normale di media e deviazione standard prefissati, per ogni tipologia di ceppaia:</p>
 
 <pre><code>##       Forma sAvg sStd
 ## 1 Carpinoso    3  1.0
@@ -102,9 +102,9 @@
 ## 3   Cerchio    0  0.5
 </code></pre>
 
-<p>Per esempio, il numero di salamandre trovate nella simulazione della ceppaia <code>Carpinoso</code> viene estratta da una \(\mathcal{N}(\) 3 \(,\) 1 \()\) troncata a 0. Su 10 alberi carpinosi, potremmo trovare: 2, 3, 3, 2, 1, 4, 4, 3, 2, 1 salamandre.</p>
+<p>Per esempio, il numero di salamandre trovate nella simulazione della ceppaia <code>Carpinoso</code> viene estratta da una \(\mathcal{N}(\) 3 \(,\) 1 \()\) troncata a 0. Su 10 alberi carpinosi, potremmo trovare: 2, 2, 3, 4, 4, 4, 3, 4, 3, 4 salamandre.</p>
 
-<p>Per la ceppaia <code>Carpino</code>, invece, potremmo avere un numero di salamandre da una \(\mathcal{N}(\) 2 \(,\) 1 \()\), per esempio: 1, 2, 1, 0, 2, 2, 3, 4, 1, 2</p>
+<p>Per la ceppaia <code>Carpino</code>, invece, potremmo avere un numero di salamandre da una \(\mathcal{N}(\) 2 \(,\) 1 \()\), per esempio: 2, 3, 1, 2, 2, 2, 3, 1, 1, 2</p>
 
 <p><strong>I parametri delle distribuzioni sono da definire secondo l&#39;esperienza di Antonio.</strong></p>
 
@@ -124,16 +124,16 @@
     T &lt;- dbh * pi
     RIndex &lt;- ((B/C)/(C/T)) - 1
 })
-print(sIndexRaw[, c(&quot;Forma&quot;, &quot;RIndex&quot;, &quot;Df&quot;)])
+print(sIndexRaw[, c(&quot;Forma&quot;, &quot;B&quot;, &quot;C&quot;, &quot;T&quot;, &quot;RIndex&quot;, &quot;Df&quot;)])
 </code></pre>
 
-<pre><code>##       Forma   RIndex    Df
-## 1 Carpinoso  0.25197 1.279
-## 2   Carpino -0.43299 1.185
-## 3   Cerchio  0.05265 1.111
+<pre><code>##       Forma      B     C     T   RIndex    Df
+## 1 Carpinoso 2059.0 718.8 314.2  0.25197 1.279
+## 2   Carpino  761.8 649.7 314.2 -0.43299 1.185
+## 3   Cerchio  330.7 314.2 314.2  0.05265 1.111
 </code></pre>
 
-<p>Sembra strano il valore negativo per l&#39;indice di Romano per il <code>Carpino</code>, se c&#39;è un errore nel calcolo non riesco a trovarlo.</p>
+<p>Sembra strano il valore negativo per l&#39;indice di Romano per il <code>Carpino</code>, se c&#39;è un errore nel calcolo non riesco a trovarlo  (<code>Df</code> è la dimensione frattale, <code>RIndex</code> è l&#39;indice di A.Romano).</p>
 
   </article>
   <!-- Presenter Notes -->
@@ -148,11 +148,11 @@ print(sIndexRaw[, c(&quot;Forma&quot;, &quot;RIndex&quot;, &quot;Df&quot;)])
 
 <p>Per ogni simulazione (o bosco) ho a disposizione i 2 indici, per ciascuno dei quali calcolo la correlazione lineare (pearson) con il numero di salamandre.</p>
 
-<p>La media e la deviazione standard sulle 10000 simulazioni della correlazione tra indice e numero salamandre, per ciascun indice (<code>Df</code> è la dimensione frattale, <code>RIndex</code> è l&#39;indice di A.Romano) sono le seguenti:</p>
+<p>La media e la deviazione standard sulle 10000 simulazioni della correlazione tra indice e numero salamandre, per ciascun indice sono le seguenti:</p>
 
 <pre><code>##       ind correlationAvg correlationStd
-## 1:     Df        0.85676         0.2044
-## 2: RIndex        0.07309         0.4307
+## 1:     Df        0.85484         0.2053
+## 2: RIndex        0.07014         0.4331
 </code></pre>
 
 <p>L&#39;indice con <code>correlationAvg</code> maggiore è il migliore.</p>
