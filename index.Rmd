@@ -66,7 +66,7 @@ Per ora, gli indici considerati in questo test sono solo la dimensione frattale 
 
 ### Misure
 
-Su ciascuno, con `ImageJ`, ho misurato la dimensione frattale (`Df`), perimetro (`B`), diametro massimo (`maxD`) ed ho imposto che il diametro a 1.30m sia 100 (`dbh`), ossia il diametro della ceppaia a cerchio:
+Su ciascun disegno di ceppaia, con `ImageJ` ho misurato la dimensione frattale (`Df`), perimetro (`B`), diametro massimo (`maxD`) ed ho imposto che il diametro a 1.30m sia 100 (`dbh`), ossia il diametro della ceppaia a cerchio:
 
 ```{r "Misure", echo=FALSE}
 print(sIndexRaw[, !colnames(sIndexRaw) %in% c("sAvg", "sStd")])

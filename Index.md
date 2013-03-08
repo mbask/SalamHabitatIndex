@@ -41,7 +41,7 @@ Per ora, gli indici considerati in questo test sono solo la dimensione frattale 
 
 ### Misure
 
-Su ciascuno, con `ImageJ`, ho misurato la dimensione frattale (`Df`), perimetro (`B`), diametro massimo (`maxD`) ed ho imposto che il diametro a 1.30m sia 100 (`dbh`), ossia il diametro della ceppaia a cerchio:
+Su ciascun disegno di ceppaia, con `ImageJ` ho misurato la dimensione frattale (`Df`), perimetro (`B`), diametro massimo (`maxD`) ed ho imposto che il diametro a 1.30m sia 100 (`dbh`), ossia il diametro della ceppaia a cerchio:
 
 
 ```
@@ -67,9 +67,9 @@ La simulazione simula di trovare le salamandre in ciascuna tipologia di ceppaia.
 ```
 
 
-Per esempio, il numero di salamandre trovate nella simulazione della ceppaia `Carpinoso` viene estratta da una $\mathcal{N}($ 3 $,$ 1 $)$ troncata a 0. Su 10 alberi carpinosi, potremmo trovare: 2, 2, 3, 4, 4, 4, 3, 4, 3, 4 salamandre.
+Per esempio, il numero di salamandre trovate nella simulazione della ceppaia `Carpinoso` viene estratta da una $\mathcal{N}($ 3 $,$ 1 $)$ troncata a 0. Su 10 alberi carpinosi, potremmo trovare: 3, 3, 3, 3, 2, 4, 3, 3, 3, 2 salamandre.
 
-Per la ceppaia `Carpino`, invece, potremmo avere un numero di salamandre da una $\mathcal{N}($ 2 $,$ 1 $)$, per esempio: 2, 3, 1, 2, 2, 2, 3, 1, 1, 2
+Per la ceppaia `Carpino`, invece, potremmo avere un numero di salamandre da una $\mathcal{N}($ 2 $,$ 1 $)$, per esempio: 2, 3, 2, 3, 3, 2, 4, 1, 3, 1
 
 **I parametri delle distribuzioni sono da definire secondo l'esperienza di Antonio.**
 
@@ -117,8 +117,8 @@ La media e la deviazione standard sulle 10000 simulazioni della correlazione tra
 
 ```
 ##       ind correlationAvg correlationStd
-## 1:     Df        0.85484         0.2053
-## 2: RIndex        0.07014         0.4331
+## 1:     Df        0.85717         0.1993
+## 2: RIndex        0.07542         0.4322
 ```
 
 
